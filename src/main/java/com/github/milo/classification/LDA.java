@@ -1,6 +1,7 @@
 package com.github.milo.classification;
 
 import com.github.milo.math.Math;
+import com.github.milo.math.matrix.EigenValueDecomposition;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -150,18 +151,92 @@ public class LDA implements SoftClassifier<double[]>,Serializable{
         if(n <= k){
             throw new IllegalArgumentException(String.format("Sample size is too small: %d <= %d",n,k));
         }
-
+        /**
+         * 特征数量
+         */
         p = x[0].length;
+        /**
+         * 每一类的样本个数
+         */
+        int []  ni = new int[k];
+        /**
+         * 特征均值向量
+         */
+        double[] mean = Math.colMean(x);
+        /**
+         * 协方差矩阵
+         */
+        double[][] cov = new double[p][p];
+        /**
+         * 类均值向量
+         */
+        mu = new double[k][p];
 
-//        int [] = new int[k];
-//        double[] mena = Math.colMean(x);
+        for (int i = 0; i < n; i++) {
+            int c = y[i];
+            ni[c]++;
+            for (int j = 0; j < p; j++) {
+                mu[c][j] += x[i][j];
+            }
+        }
+        for (int i = 0; i < k; i++) {
+            for (int j = 0; j < p; j++) {
+                mu[i][j] /= ni[i];
+            }
+        }
 
+        if(priori == null){
+            priori = new double[k];
+            for (int i = 0; i < k; i++) {
+                priori[i] = (double)ni[i]/n;
+            }
+        }
 
+        this.priori = priori;
+        ct = new double[k];
+        for (int i = 0; i < k; i++) {
+            ct[i] = Math.log(priori[i]);
+        }
 
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < p; j++) {
+                for (int l = 0; l <= j   ; l++) {
+                    cov[j][l] += (x[i][j] - mean[j]) * (x[i][l] - mean[l]);
+                }
+            }
+        }
+        tol = tol*tol;
+
+        for (int j = 0; j < p; j++) {
+            for (int l = 0; l <=j; l++) {
+                cov[j][l] /= (n-k);
+                cov[l][j] = cov[j][l];
+            }
+            if(cov[j][j] < tol){
+                throw new IllegalArgumentException(String.format("Covariance matrix(variable %d) is close to singular.",j));
+            }
+        }
+
+        EigenValueDecomposition evd = EigenValueDecomposition.decompose(cov,true);
+
+        for(double s : evd.getEigenValues()){
+            if(s < tol){
+                throw new IllegalArgumentException("The covariance matrix is close to singular.");
+            }
+        }
+        eigen = evd.getEigenValues();
+        scaling = evd.getEigenVectors();
+    }
+
+    public double[] getPrior(){
+        return priori;
     }
 
 
 
 
 
+
+
 }
+
