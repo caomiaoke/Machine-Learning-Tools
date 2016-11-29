@@ -20,6 +20,33 @@ public class Math {
     }
 
     /**
+     * 自然对数
+     * @param a
+     * @return
+     */
+    public static double log(double a){
+        return  java.lang.Math.log(a);
+    }
+
+    /**
+     * 底为10的对数
+     * @param a
+     * @return
+     */
+    public static double log10(double a){
+        return java.lang.Math.log10(a);
+    }
+
+    /**
+     * 返回自然对数ln(x+1)
+     * @param a
+     * @return
+     */
+    public static double log1p(double a){
+        return java.lang.Math.log1p(a);
+    }
+
+    /**
      * minimum of Integer
      */
     public  static Integer min(Integer a, Integer ...arr){
