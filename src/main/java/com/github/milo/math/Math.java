@@ -1,5 +1,8 @@
 package com.github.milo.math;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.HashSet;
 import java.util.Iterator;
 
@@ -7,6 +10,30 @@ import java.util.Iterator;
  * Created by milo on 16-11-23.
  */
 public class Math {
+    private static final Logger logger = LoggerFactory.getLogger(Math.class);
+
+    /**
+     * 自然对数的底E
+     */
+    public static final  double E = java.lang.Math.E;
+    /**
+     * PI
+     */
+    public  static final double PI = java.lang.Math.PI;
+    /**
+     * 机器的精度
+     */
+    public static double EPSILON = Math.pow(2.0 , -52.0);
+    /**
+     * 指数基数
+     */
+    public  static  int RADIX = 2;
+    /**
+     * 数字位数
+     */
+    public  static int DIGITS = 53;
+
+
 
 
     /**
@@ -58,6 +85,16 @@ public class Math {
         }
         return minVal;
 
+    }
+
+    /**
+     * a 的b次方
+     * @param a
+     * @param b
+     * @return
+     */
+    public static double pow(double a, double b) {
+        return java.lang.Math.pow(a, b);
     }
 
     /**
