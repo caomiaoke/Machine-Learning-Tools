@@ -3,6 +3,7 @@ package com.github.milo.math;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 
@@ -74,6 +75,15 @@ public class Math {
     }
 
     /**
+     * 求一ｅ为底的指数
+     * @param a
+     * @return
+     */
+    public static double exp(double a) {
+        return java.lang.Math.exp(a);
+    }
+
+    /**
      * minimum of Integer
      */
     public  static Integer min(Integer a, Integer ...arr){
@@ -137,6 +147,25 @@ public class Math {
     public static void scale(double a, double[] x){
         for (int i = 0; i < x.length; i++) {
             x[i] *= a;
+        }
+    }
+
+    /**
+     *  做 y = A(T)*x
+     * @param A
+     * @param x
+     * @param y
+     */
+    public static void atx(double[][] A, double[] x, double[] y){
+        int n = min(A[0].length, y.length);
+        int p = min(A.length, x.length);
+
+        Arrays.fill(y,0.0);
+        for (int i = 0; i < n; i++) {
+            for (int k = 0; k < p  ; k++) {
+                y[i] += x[k] * A[k][i];
+
+            }
         }
     }
 }
