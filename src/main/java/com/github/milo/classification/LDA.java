@@ -232,11 +232,66 @@ public class LDA implements SoftClassifier<double[]>,Serializable{
         return priori;
     }
 
+    public int predict(double[] x) {
+        return predict(x,null);
+    }
+
+    public int predict(double[] x, double[] posteriori) {
+        if (x.length != p) {
+            throw new IllegalArgumentException(String.format("Invalid input vector size: %d, expected: %d", x.length, p));
+        }
+
+        if (posteriori != null && posteriori.length != k) {
+            throw new IllegalArgumentException(String.format("Invalid posteriori vector size: %d, expected: %d", posteriori.length, k));
+        }
+
+        int y = 0;
+
+        double max = Double.NEGATIVE_INFINITY;
+
+        double[] d = new double[p];
+        double[] ux = new double[p];
+
+        for(int i = 0; i < k; i++) {
+            for (int j = 0; j < p; j++) {
+                d[j] = x[i] - mu[i][j];
+            }
+
+            Math.atx(scaling,d,ux);
+
+            double f = 0.0;
+
+            for (int j = 0; j < p; j++) {
+                f += ux[j]*ux[j] /eigen[i];
+            }
+
+            f = ct[i] - 0.5 *f;
+
+            if(max < f){
+                max = f;
+                y = i;
+            }
+
+        }
+
+        if (posteriori != null) {
+            double sum = 0.0;
+            for (int i = 0; i < k; i++) {
+                posteriori[i] = Math.exp(posteriori[i] - max);
+                sum += posteriori[i];
+
+            }
+
+
+            for (int i = 0; i < k; i++) {
+                posteriori[i] /= sum;
+            }
+        }
+
+        return y;
 
 
 
-
-
-
+    }
 }
 
